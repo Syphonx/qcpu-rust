@@ -1,0 +1,6 @@
+[package]
+name = "qcpu"
+version = "0.1.0"
+authors = ["cesque <euqsec@gmail.com>"]
+
+[dependencies]
