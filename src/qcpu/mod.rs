@@ -39,6 +39,8 @@ impl QCPU {
         for i in 0..(data.len() / 2) {
             let byte1:u8 = data[i*2];
             let byte2:u8 = data[i*2 + 1];
+
+            println!("{} {}", byte1, byte2);
         }
     }
 }

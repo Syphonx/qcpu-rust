@@ -4,7 +4,7 @@ use std::fs::File;
 use std::io::prelude::*;
 
 fn main() {
-    let mut file = match File::open("./programs/testbench.qasm") {
+    let mut file = match File::open("./programs/testbench") {
         Ok(file) => file,
         Err(E) => panic!("{:?}", E)
     };
