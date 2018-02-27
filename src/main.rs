@@ -15,5 +15,5 @@ fn main() {
     let mut cpu = QCPU::new();
     cpu.load(&data);
 
-    println!("{:?}", cpu.memory[..8650]);
+    println!("{:?}", &cpu.memory[..8650]);
 }

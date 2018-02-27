@@ -34,7 +34,7 @@ impl QCPU {
         }
     }
 
-    pub fn load(mut self, data: &[u8]) {
+    pub fn load(&mut self, data: &[u8]) {
         if data.len() % 2 != 0 { panic!("data must be multiple of 2") }
         for i in 0..(data.len() / 2) {
             let byte1:u8 = data[i*2];
