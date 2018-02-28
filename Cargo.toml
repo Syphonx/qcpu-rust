@@ -4,3 +4,4 @@ version = "0.1.0"
 authors = ["cesque <euqsec@gmail.com>"]
 
 [dependencies]
+crossterm = "0.2.0"
