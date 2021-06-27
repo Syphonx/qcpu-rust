@@ -5,3 +5,8 @@ authors = ["cesque <euqsec@gmail.com>"]
 
 [dependencies]
 crossterm = "0.2.0"
+
+[dependencies.sdl2]
+version = "0.34.5"
+default-features = false
+features = ["bundled", "static-link"]
