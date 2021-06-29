@@ -1,6 +1,9 @@
 extern crate sdl2;
 
-use qcpu::{OpArgs, QCPU};
+use std::cell::RefCell;
+use std::rc::Rc;
+
+use qcpu::OpArgs;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::pixels::{Color, PixelFormatEnum};
@@ -14,7 +17,7 @@ pub struct Optron {
     pub context: Sdl,
     pub canvas: Result<Canvas<Window>, IntegerOrSdlError>,
     pub texture: Option<Texture>,
-    pub value: i16,
+    pub example: i16,
 }
 
 impl Optron {
@@ -23,12 +26,14 @@ impl Optron {
             context: sdl2::init().unwrap(),
             canvas: Err(IntegerOrSdlError::SdlError("".to_string())),
             texture: None,
-            value: 69,
+            example: 69,
         }
     }
 
-    pub fn closure_test<'a>(&mut self) -> Box<dyn FnMut(&mut QCPU<'a>, &OpArgs) -> () + '_> {
-        Box::new(move |x, y| print!("hello, {}", self.value))
+    pub fn closure_test<'a>(
+        rc_optron: &'a Rc<RefCell<Optron>>,
+    ) -> Box<dyn FnMut(&OpArgs) -> () + '_> {
+        Box::new(move |x| -> () { print!("hello, {}", rc_optron.borrow_mut().example) })
     }
 
     pub fn set_pixel(&mut self, x: usize, y: usize) {

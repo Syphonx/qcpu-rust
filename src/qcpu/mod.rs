@@ -21,8 +21,7 @@ pub struct QCPU<'a> {
     pub flags: Flags,
     pub call_stack: Vec<usize>,
     pub stack: Vec<u16>,
-    pub syscalls: HashMap<u16, fn(&mut QCPU, &OpArgs)>,
-    pub syscalls_closures: HashMap<u16, Box<dyn FnMut(&mut QCPU<'a>, &OpArgs) -> () + 'a>>,
+    pub syscalls: HashMap<u16, Box<dyn FnMut(&OpArgs) -> () + 'a>>,
     pub current_fg_color: u16,
     pub current_bg_color: u16,
 }
@@ -57,8 +56,6 @@ impl<'a> QCPU<'a> {
             call_stack: Vec::<usize>::new(),
             stack: Vec::<u16>::new(),
             syscalls: HashMap::new(),
-            syscalls_closures: HashMap::new(),
-
             current_fg_color: 0,
             current_bg_color: 7,
         }
@@ -76,16 +73,8 @@ impl<'a> QCPU<'a> {
         }
     }
 
-    pub fn bind(&mut self, key: u16, func: fn(&mut QCPU, &OpArgs)) {
+    pub fn bind_closure(&mut self, key: u16, func: Box<dyn FnMut(&OpArgs) -> () + 'a>) {
         self.syscalls.insert(key, func);
-    }
-
-    pub fn bind_closure(
-        &mut self,
-        key: u16,
-        func: Box<dyn FnMut(&mut QCPU<'a>, &OpArgs) -> () + 'a>,
-    ) {
-        self.syscalls_closures.insert(key, func);
     }
 
     pub fn print(&mut self) {
@@ -322,13 +311,14 @@ impl<'a> QCPU<'a> {
     }
 
     // 2
-    pub fn sys(&mut self, val: &OpArgs) {
-        match self.syscalls.get(&self.read(val)) {
-            Some(sys) => {
-                sys(self, val);
+    pub fn sys(&mut self, args: &OpArgs) {
+        let syscall = self.syscalls.get_mut(&self.read(args));
+        match syscall {
+            Some(syscall) => {
+                (*syscall.as_mut())(args);
             }
             None => {
-                panic!("unknown syscode {}", self.read(val));
+                panic!("unknown syscode {}", self.read(args));
             }
         }
     }
