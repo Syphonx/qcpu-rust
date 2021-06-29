@@ -64,19 +64,31 @@ fn main() {
             .as_ref()
             .borrow_mut()
             .bind_closure(0x06, Optron::closure_test(&rc_optron));
-        // cpu.bind_closure(0x07, optron.closure_test(&rc_optron, &rc_cpu));
-        // cpu.bind_closure(0x15, optron.closure_test(&rc_optron, &rc_cpu));
-        // cpu.bind_closure(0x0B, optron.closure_test(&rc_optron, &rc_cpu));
-        // cpu.bind_closure(0x0C, optron.closure_test(&rc_optron, &rc_cpu));
+        rc_cpu
+            .as_ref()
+            .borrow_mut()
+            .bind_closure(0x07, Optron::closure_test(&rc_optron));
+        rc_cpu
+            .as_ref()
+            .borrow_mut()
+            .bind_closure(0x15, Optron::closure_test(&rc_optron));
+        rc_cpu
+            .as_ref()
+            .borrow_mut()
+            .bind_closure(0x0B, Optron::closure_test(&rc_optron));
+        rc_cpu
+            .as_ref()
+            .borrow_mut()
+            .bind_closure(0x0C, Optron::closure_test(&rc_optron));
 
-        // loop {
-        //     if cpu.flags.halt == -1 {
-        //         cpu.step();
-        //     }
-        //     if !optron.pump() {
-        //         break;
-        //     }
-        //     optron.display();
-        // }
+        loop {
+            if rc_cpu.as_ref().borrow_mut().flags.halt == -1 {
+                rc_cpu.as_ref().borrow_mut().step();
+            }
+            if !rc_optron.as_ref().borrow_mut().pump() {
+                break;
+            }
+            rc_optron.as_ref().borrow_mut().display();
+        }
     }
 }
